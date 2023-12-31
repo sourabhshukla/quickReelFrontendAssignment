@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { FaPlay } from "react-icons/fa6";
 import { FaPause } from "react-icons/fa";
 import { VideoContext } from "../App";
+import timeFormatter from "../utils/timeFormatter";
 
 function VideoPlayer() {
   const videoRef = useRef();
@@ -48,7 +49,7 @@ function VideoPlayer() {
   const startVideo = () => {
     //videoRef.current.src = "video.mp4";
     if (!currVideo) return;
-    videoRef.current.src = currVideo;
+    videoRef.current.src = currVideo.url;
     videoRef.current.play().catch((error) => {
       console.error("Error starting video playback:", error);
     });
@@ -110,7 +111,7 @@ function VideoPlayer() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-between">
+    <div className="flex flex-col items-center justify-between">
       <div className="flex items-center relative">
         <video
           crossOrigin="anonymous"
@@ -131,8 +132,6 @@ function VideoPlayer() {
           onEnded={handleVideoEnded}
           onLoadedData={() => {
             console.log("loading complete");
-            // startVideo();
-            // setIsLoading(false);
           }}
           autoPlay
           playsInline
@@ -154,7 +153,9 @@ function VideoPlayer() {
           {/* <FaPlay  className="playBtn" /> */}
           <div className="absolute bottom-2 w-full flex gap-5 flex-col items-center">
             <div className="w-full flex justify-between items-center">
-              {progress}
+              <p className="text-white">
+                {timeFormatter(videoRef.current?.currentTime)}
+              </p>
               <div
                 className="bg-gray-400 w-[90%] h-[10px] b-[50px] rounded-lg cursor-pointer"
                 onClick={handleSeek}
@@ -164,7 +165,10 @@ function VideoPlayer() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              {videoRef.current && (videoRef.current.duration || "00:00")}
+              <p className="text-white">
+                {videoRef.current &&
+                  (timeFormatter(videoRef.current.duration) || "00:00")}
+              </p>
             </div>
             {play ? (
               <FaPause
@@ -186,6 +190,9 @@ function VideoPlayer() {
         height="65"
         className="absolute z-[100] top-[100px]"
       />
+      <div className="flex justify-start mt-[20px]">
+        <h1 className="font-bold text-xl">{currVideo.name}</h1>
+      </div>
     </div>
   );
 }

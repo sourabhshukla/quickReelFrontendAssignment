@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { VideoContext } from "../App";
 
 export default function Header() {
@@ -13,10 +13,14 @@ export default function Header() {
       const reader = new FileReader();
       reader.onload = function (event) {
         const videoDataUrl = event.target.result;
-        setCurrVideo(videoDataUrl);
+        setCurrVideo({ url: videoDataUrl, name: seletedFile.name });
         if (allVideos.includes(videoDataUrl)) {
           console.log("Already present");
-        } else setAllVideos([...allVideos, videoDataUrl]);
+        } else
+          setAllVideos([
+            ...allVideos,
+            { url: videoDataUrl, name: seletedFile.name },
+          ]);
         console.log("Video Data Url", videoDataUrl);
       };
       reader.readAsDataURL(seletedFile);

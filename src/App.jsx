@@ -3,6 +3,7 @@ import "./App.css";
 import Header from "./components/Header";
 import VideoPlayer from "./components/VideoPlayer";
 import EmptyVideoPlayer from "./components/EmptyVideoPlayer";
+import VideoSection from "./components/VideoSection";
 export const VideoContext = createContext();
 function App() {
   const [currVideo, setCurrVideo] = useState();
@@ -32,7 +33,9 @@ function App() {
     >
       <div className="flex w-full flex-col">
         <Header />
-        {!currVideo ? <EmptyVideoPlayer /> : <VideoPlayer />}
+        <VideoSection />
+        {/* {!currVideo ? <EmptyVideoPlayer /> : <VideoPlayer />} */}
+        {/* <VideoList /> */}
       </div>
     </VideoContext.Provider>
   );

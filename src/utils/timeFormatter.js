@@ -1,4 +1,5 @@
-export function timeFormatter(seconds) {
+export default function timeFormatter(seconds) {
+  if (!seconds) return "00:00:00";
   seconds = Math.floor(seconds);
   let minutes = Math.floor(seconds / 60);
   seconds = Math.floor(seconds % 60);
@@ -15,4 +16,4 @@ function transform(number) {
   });
 }
 
-console.log(timeFormatter());
+// console.log(timeFormatter());
