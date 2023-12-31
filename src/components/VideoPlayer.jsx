@@ -1,20 +1,28 @@
 import * as faceapi from "face-api.js";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaPlay } from "react-icons/fa6";
 import { FaPause } from "react-icons/fa";
+import { VideoContext } from "../App";
 
 function VideoPlayer() {
   const videoRef = useRef();
   const canvasRef = useRef();
   const [intervalId, setIntervalId] = useState(null);
+  const { currVideo } = useContext(VideoContext);
 
   const [progress, setProgress] = useState(0);
   const [play, setPlay] = useState(false);
 
   useEffect(() => {
     startVideo();
+    //console.log(videoRef.current.src);
     videoRef && loadModels();
   }, []);
+
+  useEffect(() => {
+    startVideo();
+    console.log(currVideo);
+  }, [currVideo]);
 
   const handlePlay = () => {
     console.log(videoRef.current.currentTime);
@@ -38,7 +46,9 @@ function VideoPlayer() {
   };
 
   const startVideo = () => {
-    videoRef.current.src = "video.mp4";
+    //videoRef.current.src = "video.mp4";
+    if (!currVideo) return;
+    videoRef.current.src = currVideo;
     videoRef.current.play().catch((error) => {
       console.error("Error starting video playback:", error);
     });
@@ -48,7 +58,7 @@ function VideoPlayer() {
     const currentTime = videoRef.current.currentTime;
     const duration = videoRef.current.duration;
     setProgress(((currentTime * 100) / duration).toFixed(2));
-    console.log(currentTime, duration);
+    // console.log(currentTime, duration);
   };
 
   const loadModels = () => {
@@ -74,7 +84,7 @@ function VideoPlayer() {
           )
           .withFaceLandmarks()
           .withFaceExpressions();
-        console.log(detections);
+        //console.log(detections);
         // videoRef.current.videoWidth = 1280;
         // videoRef.current.videoHeight = 720;
 
@@ -107,6 +117,10 @@ function VideoPlayer() {
           ref={videoRef}
           // controls
           onTimeUpdate={handleTimeUpdate}
+          onLoadStart={() => {
+            console.log("Load Started");
+            //setIsLoading(true);
+          }}
           onPlay={() => {
             setPlay(true);
             faceMyDetect();
@@ -117,6 +131,8 @@ function VideoPlayer() {
           onEnded={handleVideoEnded}
           onLoadedData={() => {
             console.log("loading complete");
+            // startVideo();
+            // setIsLoading(false);
           }}
           autoPlay
           playsInline
