@@ -6,6 +6,7 @@ import { FaPause } from "react-icons/fa";
 function VideoPlayer() {
   const videoRef = useRef();
   const canvasRef = useRef();
+  const [intervalId, setIntervalId] = useState(null);
 
   const [progress, setProgress] = useState(0);
   const [play, setPlay] = useState(false);
@@ -56,13 +57,14 @@ function VideoPlayer() {
       faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
       faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
       faceapi.nets.faceExpressionNet.loadFromUri("/models"),
-    ]).then(() => {
-      faceMyDetect();
-    });
+    ]);
+    // .then(() => {
+    //   faceMyDetect();
+    // });
   };
 
   const faceMyDetect = () => {
-    setInterval(async () => {
+    const id = setInterval(async () => {
       // Check if the video dimensions are available
       if (videoRef.current.videoWidth && videoRef.current.videoHeight) {
         const detections = await faceapi
@@ -94,6 +96,7 @@ function VideoPlayer() {
         faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
       }
     }, 1000);
+    setIntervalId(id);
   };
 
   return (
@@ -106,6 +109,10 @@ function VideoPlayer() {
           onTimeUpdate={handleTimeUpdate}
           onPlay={() => {
             setPlay(true);
+            faceMyDetect();
+          }}
+          onPause={() => {
+            clearInterval(intervalId);
           }}
           onEnded={handleVideoEnded}
           onLoadedData={() => {
